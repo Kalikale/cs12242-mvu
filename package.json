@@ -1,6 +1,6 @@
 {
   "name": "cs12242-mvu",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,5 +13,8 @@
   "prettier": {
     "semi": false,
     "experimentalTernaries": true
+  },
+  "dependencies": {
+    "snabbdom": "^3.6.2"
   }
 }
