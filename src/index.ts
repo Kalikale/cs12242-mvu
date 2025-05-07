@@ -70,7 +70,7 @@ export const startModelCmd = <Model, Msg>(
 
         if (hasCmd(cmdModel)) {
           pipe(
-            cmdModel.cmd.sub(dispatch),
+            () => cmdModel.cmd.sub(dispatch),
             Effect.promise,
             Effect.tap(() => updateModel()),
             Effect.runPromise,
@@ -91,7 +91,7 @@ export const startModelCmd = <Model, Msg>(
 
     if (hasCmd(cmdModel)) {
       pipe(
-        cmdModel.cmd.sub(dispatch),
+        () => cmdModel.cmd.sub(dispatch),
         Effect.promise,
         Effect.tap(() => updateModel()),
         Effect.runPromise,
