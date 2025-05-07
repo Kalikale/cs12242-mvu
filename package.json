@@ -15,6 +15,7 @@
     "experimentalTernaries": true
   },
   "dependencies": {
+    "effect": "^3.14.20",
     "snabbdom": "^3.6.2"
   }
 }

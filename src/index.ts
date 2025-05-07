@@ -1,5 +1,5 @@
 import { Cmd, type ModelCmd } from "./cmd"
-import { Effect } from "effect"
+import { Effect, pipe } from "effect"
 import {
   h,
   init,
@@ -65,13 +65,15 @@ export const startModelCmd = <Model, Msg>(
       while (messageQueue.length > 0) {
         const msg = messageQueue.splice(0, 1)[0]
 
-        let { model: newModel, cmd } = update(msg, model)
+        const cmdModel = update(msg, model)
+        model = hasCmd(cmdModel) ? cmdModel.model : cmdModel
 
-        model = newModel
-
-        if (cmd !== null) {
-          Effect.runFork(
-            cmd.sub(dispatch).pipe(Effect.tap(() => updateModel())),
+        if (hasCmd(cmdModel)) {
+          pipe(
+            cmdModel.cmd.sub(dispatch),
+            Effect.promise,
+            Effect.tap(() => updateModel()),
+            Effect.runPromise,
           )
         }
       }
@@ -84,10 +86,15 @@ export const startModelCmd = <Model, Msg>(
       setTimeout(updateModel, 0)
     }
 
-    let { model, cmd: initCmd } = initModel
-    if (initCmd) {
-      Effect.runFork(
-        initCmd.sub(dispatch).pipe(Effect.tap(() => updateModel())),
+    let cmdModel = initModel
+    let model = hasCmd(cmdModel) ? cmdModel.model : cmdModel
+
+    if (hasCmd(cmdModel)) {
+      pipe(
+        cmdModel.cmd.sub(dispatch),
+        Effect.promise,
+        Effect.tap(() => updateModel()),
+        Effect.runPromise,
       )
     }
 
@@ -96,5 +103,13 @@ export const startModelCmd = <Model, Msg>(
 
   Effect.runPromise(main)
 }
+
+const hasCmd = <Model, Msg>(
+  value: ModelCmd<Model, Msg>,
+): value is { model: Model; cmd: Cmd<Msg> } =>
+  typeof value === "object" &&
+  value !== null &&
+  "model" in value &&
+  "cmd" in value
 
 export { h, Cmd, type ModelCmd }
