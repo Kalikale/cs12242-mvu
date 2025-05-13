@@ -132,13 +132,16 @@ export const canvasView =
                     Effect.tap(() => (ctx.fillStyle = "")),
                   ),
                 ),
-                Match.tag("Text", ({ x, y, text, color, font, fontSize }) =>
-                  Effect.void.pipe(
-                    Effect.tap(() => (ctx.fillStyle = color)),
-                    Effect.tap(() => (ctx.font = `${fontSize}px ${font}`)),
-                    Effect.tap(() => ctx.fillText(text, x, y)),
-                    Effect.tap(() => (ctx.fillStyle = "")),
-                  ),
+                Match.tag(
+                  "Text",
+                  ({ x, y, text, color, font, fontSize, textAlign }) =>
+                    Effect.void.pipe(
+                      Effect.tap(() => (ctx.fillStyle = color)),
+                      Effect.tap(() => (ctx.textAlign = textAlign)),
+                      Effect.tap(() => (ctx.font = `${fontSize}px ${font}`)),
+                      Effect.tap(() => ctx.fillText(text, x, y)),
+                      Effect.tap(() => (ctx.fillStyle = "")),
+                    ),
                 ),
                 Match.tag("SolidCircle", ({ x, y, radius, color }) =>
                   Effect.void.pipe(
