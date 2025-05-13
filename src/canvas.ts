@@ -12,6 +12,7 @@ import {
 } from "effect"
 
 export const CanvasElement = S.Union(
+  S.TaggedStruct("None", {}),
   S.TaggedStruct("Clear", {
     color: S.String,
   }),
@@ -79,7 +80,8 @@ export const CanvasElement = S.Union(
 )
 export type CanvasElement = typeof CanvasElement.Type
 export const [
-  Clear, //
+  None, //
+  Clear,
   Text,
   SolidCircle,
   OutlinedCircle,
@@ -132,6 +134,7 @@ export const canvasView =
                     Effect.tap(() => (ctx.fillStyle = "")),
                   ),
                 ),
+                Match.tag("None", () => Effect.void),
                 Match.tag(
                   "Text",
                   ({ x, y, text, color, font, fontSize, textAlign }) =>
