@@ -24,6 +24,16 @@ export const CanvasElement = S.Union(
     font: S.optionalWith(S.String, {
       default: () => "sans-serif",
     }),
+    textAlign: S.optionalWith(
+      S.Union(
+        S.Literal("left"), //
+        S.Literal("center"),
+        S.Literal("right"),
+      ),
+      {
+        default: () => "center",
+      },
+    ),
   }),
   S.TaggedStruct("SolidCircle", {
     x: S.Number,
