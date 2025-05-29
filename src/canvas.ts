@@ -96,13 +96,21 @@ export const CanvasMsg = S.Union(
   S.TaggedStruct("Canvas.MsgKeyDown", {
     key: S.String,
   }),
+  S.TaggedStruct("Canvas.MsgKeyUp", {
+    key: S.String,
+  }),
   S.TaggedStruct("Canvas.MsgMouseDown", {
+    x: S.Number,
+    y: S.Number,
+  }),
+  S.TaggedStruct("Canvas.MsgMouseUp", {
     x: S.Number,
     y: S.Number,
   }),
 )
 export type CanvasMsg = typeof CanvasMsg.Type
-export const [MsgTick, MsgKeyDown, MsgMouseDown] = CanvasMsg.members
+export const [MsgTick, MsgKeyDown, MsgKeyUp, MsgMouseDown, MsgMouseUp] =
+  CanvasMsg.members
 
 const imageCacheRef = Ref.unsafeMake(HashMap.empty())
 
@@ -264,9 +272,24 @@ export const canvasView =
                     }),
                   ),
                 )
+                window.addEventListener("keyup", (e) =>
+                  dispatch(
+                    MsgKeyUp.make({
+                      key: e.key,
+                    }),
+                  ),
+                )
                 window.addEventListener("mousedown", (e) =>
                   dispatch(
                     MsgMouseDown.make({
+                      x: e.x,
+                      y: e.y,
+                    }),
+                  ),
+                )
+                window.addEventListener("mousedown", (e) =>
+                  dispatch(
+                    MsgMouseUp.make({
                       x: e.x,
                       y: e.y,
                     }),
