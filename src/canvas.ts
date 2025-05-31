@@ -219,19 +219,24 @@ export const canvasView =
                           pipe(
                             cache,
                             HashMap.get(src),
-                            Option.getOrElse(() => {
-                              // FIXME: Must wait for load event
-                              const ret = new Image()
-                              ret.src = src
-                              return ret
-                            }),
-                            (img) =>
-                              Effect.void.pipe(
-                                Effect.tap(() => pipe(
-                                  Ref.set(imageCacheRef, HashMap.set(cache, src, img)),
-                                )),
+                            Option.match({
+                              onSome: (img) => Effect.void.pipe(
                                 Effect.tap(() => ctx.drawImage(img, x, y)),
                               ),
+                              onNone: () => Effect.void.pipe(
+                                Effect.map(() => {
+                                  const ret = new Image()
+                                  ret.src = src
+                                  ret.onload = () => {
+                                    ctx.drawImage(ret, x, y)
+                                  }
+                                  return ret
+                                }),
+                                Effect.tap((img) =>
+                                  Ref.set(imageCacheRef, HashMap.set(cache, src, img))
+                                ),
+                              ),
+                            }),
                           ),
                         ),
                       ),
