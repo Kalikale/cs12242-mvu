@@ -220,12 +220,15 @@ export const canvasView =
                             cache,
                             HashMap.get(src),
                             Option.getOrElse(() => {
+                              // FIXME: Must wait for load event
                               const ret = new Image()
                               ret.src = src
-                              ret.onload = () => {
-                                ctx.drawImage(ret, x, y)
-                              }
-                            })
+                              return ret
+                            }),
+                            (img) =>
+                              Effect.void.pipe(
+                                Effect.tap(() => ctx.drawImage(img, x, y)),
+                              ),
                           ),
                         ),
                       ),
