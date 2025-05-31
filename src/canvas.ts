@@ -112,7 +112,7 @@ export type CanvasMsg = typeof CanvasMsg.Type
 export const [MsgTick, MsgKeyDown, MsgKeyUp, MsgMouseDown, MsgMouseUp] =
   CanvasMsg.members
 
-const imageCacheRef = Ref.unsafeMake(HashMap.empty())
+const imageCacheRef = Ref.unsafeMake(HashMap.empty<string, HTMLImageElement>())
 
 export const canvasView =
   <Model, Msg>(
@@ -227,6 +227,9 @@ export const canvasView =
                             }),
                             (img) =>
                               Effect.void.pipe(
+                                Effect.tap(() => pipe(
+                                  Ref.set(imageCacheRef, HashMap.set(cache, src, img)),
+                                )),
                                 Effect.tap(() => ctx.drawImage(img, x, y)),
                               ),
                           ),
