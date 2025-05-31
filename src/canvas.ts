@@ -172,6 +172,7 @@ export const canvasView =
                       Effect.tap(() => (ctx.lineWidth = lineWidth)),
                       Effect.tap(() => ctx.beginPath()),
                       Effect.tap(() => ctx.arc(x, y, radius, 0, 360)),
+                      Effect.tap(() => ctx.stroke()),
                       Effect.tap(() => ctx.closePath()),
                       Effect.tap(() => (ctx.strokeStyle = "")),
                     ),
